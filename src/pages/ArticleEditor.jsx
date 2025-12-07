@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
 const ArticleEditor = () => {
     const { id } = useParams(); // If id exists, it's edit mode
     const navigate = useNavigate();
+    const { user } = useAuth();
     const isEditMode = !!id;
 
     const [formData, setFormData] = useState({
@@ -43,17 +45,25 @@ const ArticleEditor = () => {
         e.preventDefault();
         setLoading(true);
 
+        if (!user) {
+            alert("You must be logged in to save an article.");
+            setLoading(false);
+            return;
+        }
+
         try {
+            const articleData = { ...formData, user_id: user.id };
+
             if (isEditMode) {
                 const { error } = await supabase
                     .from('articles')
-                    .update(formData)
+                    .update(articleData)
                     .eq('id', id);
                 if (error) throw error;
             } else {
                 const { error } = await supabase
                     .from('articles')
-                    .insert([formData]);
+                    .insert([articleData]);
                 if (error) throw error;
             }
             navigate('/');

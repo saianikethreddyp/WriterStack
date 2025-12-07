@@ -5,16 +5,17 @@ import { useAuth } from '../contexts/AuthContext';
 
 const Dashboard = () => {
     const [articles, setArticles] = useState([]);
-    const { logout } = useAuth();
+    const { user, logout } = useAuth();
 
     useEffect(() => {
-        fetchArticles();
-    }, []);
+        if (user) fetchArticles();
+    }, [user]);
 
     const fetchArticles = async () => {
         const { data, error } = await supabase
             .from('articles')
             .select('*')
+            .eq('user_id', user.id)
             .order('created_at', { ascending: false });
 
         if (error) console.error('Error fetching articles:', error);

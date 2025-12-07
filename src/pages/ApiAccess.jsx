@@ -11,10 +11,11 @@ const ApiAccess = () => {
     // For this implementation, we are using the standard Supabase REST endpoint pattern.
     const projectUrl = import.meta.env.VITE_SUPABASE_URL;
     const apiKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    const userId = user?.id || 'YOUR_USER_ID';
 
     const exampleCode = `// Example: Fetching your published articles
 const fetchArticles = async () => {
-  const response = await fetch('${projectUrl}/rest/v1/articles?select=*&published=eq.true', {
+  const response = await fetch('${projectUrl}/rest/v1/articles?select=*&published=eq.true&user_id=eq.${userId}', {
     headers: {
       'apikey': '${apiKey}',
       'Authorization': 'Bearer ${apiKey}'
