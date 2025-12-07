@@ -9,8 +9,8 @@ const ApiAccess = () => {
 
     // In a real app we might not expose the anon key this easily or we might have a separate public API key.
     // For this implementation, we are using the standard Supabase REST endpoint pattern.
-    const projectUrl = 'https://mkojcietzlacpulogtfe.supabase.co';
-    const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1rb2pjaWV0emxhY3B1bG9ndGZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxMjI2MjAsImV4cCI6MjA4MDY5ODYyMH0.8fIDecpQ30iC75XuzaKnpXKFeKJ5bIqGJxZXpx-pEHU';
+    const projectUrl = import.meta.env.VITE_SUPABASE_URL;
+    const apiKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
     const exampleCode = `// Example: Fetching your published articles
 const fetchArticles = async () => {
@@ -79,8 +79,8 @@ fetchArticles();`;
                         <button
                             onClick={handleCopy}
                             className={`px-3 py-1 rounded text-sm font-medium border ${copied
-                                    ? 'bg-green-100 text-green-800 border-green-200'
-                                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                ? 'bg-green-100 text-green-800 border-green-200'
+                                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                                 }`}
                         >
                             {copied ? 'Copied!' : 'Copy Code'}

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate, useParams } from 'react-router-dom';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
 const ArticleEditor = () => {
     const { id } = useParams(); // If id exists, it's edit mode
@@ -76,8 +78,8 @@ const ArticleEditor = () => {
                             required
                             value={formData.title}
                             onChange={(e) => {
-                                // Auto-generate slug from title if slug is empty
-                                if (!formData.slug && !isEditMode) {
+                                // Auto-generate slug from title in Create mode
+                                if (!isEditMode) {
                                     setFormData(prev => ({ ...prev, title: e.target.value, slug: e.target.value.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') }))
                                 } else {
                                     handleChange(e)
@@ -124,14 +126,14 @@ const ArticleEditor = () => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Content</label>
-                        <textarea
-                            name="content"
-                            rows={10}
-                            required
-                            value={formData.content}
-                            onChange={handleChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-2 font-mono"
-                        />
+                        <div className="mt-1 bg-white">
+                            <ReactQuill
+                                theme="snow"
+                                value={formData.content}
+                                onChange={(value) => setFormData({ ...formData, content: value })}
+                                className="h-64 mb-12"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex items-center">
