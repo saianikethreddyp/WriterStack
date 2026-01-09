@@ -285,7 +285,104 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* How It Works Section */}
+      <section className="py-24 bg-white border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight sm:text-4xl">
+              From Draft to Deploy in Minutes
+            </h2>
+            <p className="mt-4 text-lg text-gray-500">
+              A simple workflow for developers who love to write.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+            {/* Connecting Line (Desktop) */}
+            <div className="hidden md:block absolute top-12 left-1/6 right-1/6 h-0.5 bg-gray-100 -z-10"></div>
+
+            {/* Step 1 */}
+            <div className="relative flex flex-col items-center text-center">
+              <div className="h-24 w-24 bg-indigo-50 rounded-full flex items-center justify-center border-4 border-white shadow-sm mb-6">
+                <span className="text-3xl font-bold text-indigo-600">1</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Write Content</h3>
+              <p className="text-gray-500">
+                Create articles in our beautiful notion-style editor with markdown support.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative flex flex-col items-center text-center">
+              <div className="h-24 w-24 bg-purple-50 rounded-full flex items-center justify-center border-4 border-white shadow-sm mb-6">
+                <span className="text-3xl font-bold text-purple-600">2</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Get API Key</h3>
+              <p className="text-gray-500">
+                Generate a secure API key from your dashboard to access your content programmatically.
+              </p>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative flex flex-col items-center text-center">
+              <div className="h-24 w-24 bg-emerald-50 rounded-full flex items-center justify-center border-4 border-white shadow-sm mb-6">
+                <span className="text-3xl font-bold text-emerald-600">3</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Render Anywhere</h3>
+              <p className="text-gray-500">
+                Fetch articles via REST API and display them on your Next.js, React, or mobile app.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-gray-50/50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 tracking-tight sm:text-4xl">
+              Frequently Asked Questions
+            </h2>
+          </div>
+
+          <div className="grid gap-8">
+            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Is it really free?</h3>
+              <p className="text-gray-600">Yes! We are currently launching as a free service for everyone. You get unlimited articles, API requests, and projects.</p>
+            </div>
+            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Can I use this for my company blog?</h3>
+              <p className="text-gray-600">Absolutely. The API is designed to be robust enough for production corporate blogs, documentation sites, and engineering logs.</p>
+            </div>
+            <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Do you support custom domains?</h3>
+              <p className="text-gray-600">For the "Public Blog" feature, we currently host on <strong>writerstack.com/you</strong>. For custom domains, we recommend using our Headless API to build your own site.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-20 relative overflow-hidden bg-gray-900">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-indigo-500/20 via-gray-900 to-gray-900"></div>
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <h2 className="text-4xl font-bold text-white mb-6 tracking-tight">
+            Ready to start writing?
+          </h2>
+          <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+            Join thousands of developers building the next generation of content-driven applications. Free forever.
+          </p>
+          <div className="flex justify-center gap-4">
+            <Link href="/auth/register" className="bg-white text-gray-900 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition shadow-xl">
+              Get Started for Free
+            </Link>
+            <Link href="/auth/login" className="bg-transparent border border-gray-700 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-800 transition">
+              Log in
+            </Link>
+          </div>
+        </div>
+      </section>
       <footer className="bg-white border-t border-gray-100 py-12">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
           <div className="flex items-center mb-4 md:mb-0">
