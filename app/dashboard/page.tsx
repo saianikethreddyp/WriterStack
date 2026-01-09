@@ -26,29 +26,18 @@ export default async function DashboardPage() {
 
     return (
         <div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Overview</h1>
-                    <p className="mt-1 text-gray-500">Welcome back, {session.user.name}</p>
-                </div>
-                <div className="mt-4 sm:mt-0">
-                    <Link
-                        href="/dashboard/create"
-                        className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Create Article
-                    </Link>
-                </div>
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Overview</h1>
+                <p className="mt-2 text-gray-500">Welcome back, {session.user.name}. Here's what's happening with your content.</p>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-8">
-                <div className="bg-white overflow-hidden shadow rounded-xl border border-gray-100">
-                    <div className="p-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-10">
+                <div className="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="p-6">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <FileText className="h-6 w-6 text-gray-400" />
+                            <div className="flex-shrink-0 bg-indigo-50 p-3 rounded-lg">
+                                <FileText className="h-6 w-6 text-indigo-600" />
                             </div>
                             <div className="ml-5 w-0 flex-1">
                                 <dl>
@@ -62,11 +51,11 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="bg-white overflow-hidden shadow rounded-xl border border-gray-100">
-                    <div className="p-5">
+                <div className="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="p-6">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <Globe className="h-6 w-6 text-green-400" />
+                            <div className="flex-shrink-0 bg-green-50 p-3 rounded-lg">
+                                <Globe className="h-6 w-6 text-green-600" />
                             </div>
                             <div className="ml-5 w-0 flex-1">
                                 <dl>
@@ -80,11 +69,11 @@ export default async function DashboardPage() {
                     </div>
                 </div>
 
-                <div className="bg-white overflow-hidden shadow rounded-xl border border-gray-100">
-                    <div className="p-5">
+                <div className="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="p-6">
                         <div className="flex items-center">
-                            <div className="flex-shrink-0">
-                                <Pencil className="h-6 w-6 text-yellow-400" />
+                            <div className="flex-shrink-0 bg-yellow-50 p-3 rounded-lg">
+                                <Pencil className="h-6 w-6 text-yellow-600" />
                             </div>
                             <div className="ml-5 w-0 flex-1">
                                 <dl>
@@ -100,8 +89,10 @@ export default async function DashboardPage() {
             </div>
 
             {/* Content Table */}
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Recent Content</h2>
-            {/* Content Table (Client Component with Search) */}
+            <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-gray-400" />
+                Recent Content
+            </h2>
             <ArticleList initialArticles={JSON.parse(JSON.stringify(articles))} />
         </div>
     );

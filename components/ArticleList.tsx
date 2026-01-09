@@ -30,30 +30,28 @@ export default function ArticleList({ initialArticles }: { initialArticles: any[
     });
 
     return (
-        <div>
-            {/* Search and Filter Controls */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                <div className="relative flex-1">
+        <div className="space-y-6">
+            {/* Controls */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                <div className="relative w-full sm:w-96">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Search className="h-5 w-5 text-gray-400" />
+                        <Search className="h-4 w-4 text-gray-400" />
                     </div>
                     <input
                         type="text"
                         placeholder="Search articles..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all bg-white shadow-sm"
                     />
                 </div>
-                <div className="sm:w-48">
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <Filter className="h-4 w-4 text-gray-400" />
-                        </div>
+
+                <div className="flex gap-3 w-full sm:w-auto">
+                    <div className="relative flex-1 sm:flex-none">
                         <select
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value as any)}
-                            className="block w-full pl-10 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="block w-full pl-3 pr-8 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-white shadow-sm"
                         >
                             <option value="all">All Status</option>
                             <option value="published">Published</option>
@@ -63,64 +61,91 @@ export default function ArticleList({ initialArticles }: { initialArticles: any[
                 </div>
             </div>
 
-            {/* List */}
-            <div className="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
+            {/* Table */}
+            <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
                 {filteredArticles.length === 0 ? (
-                    <div className="text-center py-12">
-                        <div className="mx-auto h-12 w-12 text-gray-300">
-                            <FileText className="h-full w-full" />
+                    <div className="text-center py-16 px-4">
+                        <div className="mx-auto h-12 w-12 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                            <FileText className="h-6 w-6 text-gray-400" />
                         </div>
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">No articles found</h3>
-                        <p className="mt-1 text-sm text-gray-500">
-                            {searchQuery ? 'Try adjusting your search terms.' : 'Get started by creating a new article.'}
+                        <h3 className="text-base font-semibold text-gray-900">No articles found</h3>
+                        <p className="mt-1 text-sm text-gray-500 max-w-sm mx-auto">
+                            {searchQuery ? `No results for "${searchQuery}"` : 'Get started by creating your first article to share with the world.'}
                         </p>
                         {!searchQuery && (
                             <div className="mt-6">
                                 <Link
                                     href="/dashboard/create"
-                                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all"
                                 >
-                                    <Plus className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-                                    New Article
+                                    <Plus className="-ml-1 mr-2 h-4 w-4" />
+                                    Create Article
                                 </Link>
                             </div>
                         )}
                     </div>
                 ) : (
-                    <ul role="list" className="divide-y divide-gray-100">
-                        {filteredArticles.map((article: any) => (
-                            <li key={article._id.toString()} className="hover:bg-gray-50 transition duration-150 ease-in-out">
-                                <div className="px-6 py-5 flex items-center justify-between">
-                                    <div className="flex min-w-0 gap-x-4">
-                                        <div className="min-w-0 flex-auto">
-                                            <p className="text-sm font-semibold leading-6 text-gray-900">
-                                                <Link href={`/dashboard/edit/${article._id}`} className="hover:underline">
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50/50">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        Article
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                        Date
+                                    </th>
+                                    <th scope="col" className="relative px-6 py-3">
+                                        <span className="sr-only">Actions</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {filteredArticles.map((article: any) => (
+                                    <tr key={article._id.toString()} className="hover:bg-gray-50/50 transition-colors">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex flex-col">
+                                                <Link href={`/dashboard/edit/${article._id}`} className="text-sm font-medium text-gray-900 hover:text-indigo-600 transition-colors">
                                                     {article.title}
                                                 </Link>
-                                            </p>
-                                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                                                /{article.slug}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col items-end gap-y-1">
-                                        <p className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${article.published
-                                            ? 'bg-green-50 text-green-700 ring-green-600/20'
-                                            : 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
-                                            }`}>
-                                            {article.published ? 'Published' : 'Draft'}
-                                        </p>
-                                        <p className="text-xs leading-5 text-gray-500">
-                                            {new Date(article.createdAt).toLocaleDateString()}
-                                        </p>
-                                        <div className="mt-2">
-                                            <ArticleActions articleId={article._id.toString()} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                                                <span className="text-xs text-gray-500 font-mono mt-0.5">/{article.slug}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${article.published
+                                                ? 'bg-green-50 text-green-700 border-green-200'
+                                                : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+                                                }`}>
+                                                <span className={`h-1.5 w-1.5 rounded-full mr-1.5 ${article.published ? 'bg-green-500' : 'bg-yellow-500'}`}></span>
+                                                {article.published ? 'Published' : 'Draft'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {new Date(article.createdAt).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric'
+                                            })}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <div className="flex justify-end gap-2">
+                                                <Link
+                                                    href={`/dashboard/edit/${article._id}`}
+                                                    className="text-gray-400 hover:text-indigo-600 transition-colors"
+                                                >
+                                                    Edit
+                                                </Link>
+                                                <ArticleActions articleId={article._id.toString()} />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
         </div>
