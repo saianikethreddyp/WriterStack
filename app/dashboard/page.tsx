@@ -5,6 +5,7 @@ import Article from '@/models/Article';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Plus, FileText, Globe, Pencil } from 'lucide-react';
+import ArticleActions from '@/components/ArticleActions';
 
 export default async function DashboardPage() {
     const session = await getServerSession(authOptions);
@@ -137,14 +138,17 @@ export default async function DashboardPage() {
                                     </div>
                                     <div className="flex flex-col items-end gap-y-1">
                                         <p className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${article.published
-                                                ? 'bg-green-50 text-green-700 ring-green-600/20'
-                                                : 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
+                                            ? 'bg-green-50 text-green-700 ring-green-600/20'
+                                            : 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
                                             }`}>
                                             {article.published ? 'Published' : 'Draft'}
                                         </p>
                                         <p className="text-xs leading-5 text-gray-500">
                                             {new Date(article.createdAt).toLocaleDateString()}
                                         </p>
+                                        <div className="mt-2">
+                                            <ArticleActions articleId={article._id.toString()} />
+                                        </div>
                                     </div>
                                 </div>
                             </li>

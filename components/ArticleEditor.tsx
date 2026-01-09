@@ -16,6 +16,7 @@ interface ArticleEditorProps {
 export default function ArticleEditor({ initialData, isEditMode = false }: ArticleEditorProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [formData, setFormData] = useState({
         title: initialData?.title || '',
         slug: initialData?.slug || '',
@@ -148,21 +149,45 @@ export default function ArticleEditor({ initialData, isEditMode = false }: Artic
                 </label>
             </div>
 
-            <div className="flex justify-end gap-3">
-                <button
-                    type="button"
-                    onClick={() => router.push('/dashboard')}
-                    className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                    Cancel
-                </button>
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-                >
-                    {loading ? 'Saving...' : 'Save Article'}
-                </button>
+            <div className="flex justify-between gap-3">
+                {isEditMode && (
+                    <button
+                        type="button"
+                        onClick={async () => {
+                            if (!confirm('Delete this article permanently?')) return;
+                            setIsDeleting(true);
+                            try {
+                                const res = await fetch(`/api/articles/${initialData._id}`, { method: 'DELETE' });
+                                if (res.ok) router.push('/dashboard');
+                            } catch (error) {
+                                alert('Failed to delete');
+                            } finally {
+                                setIsDeleting(false);
+                            }
+                        }}
+                        disabled={isDeleting || loading}
+                        className="rounded-md border border-red-200 bg-red-50 py-2 px-4 text-sm font-medium text-red-600 shadow-sm hover:bg-red-100 disabled:opacity-50"
+                    >
+                        {isDeleting ? 'Deleting...' : 'Delete'}
+                    </button>
+                )}
+
+                <div className="flex gap-3">
+                    <button
+                        type="button"
+                        onClick={() => router.push('/dashboard')}
+                        className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        disabled={loading || isDeleting}
+                        className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+                    >
+                        {loading ? 'Saving...' : 'Save Article'}
+                    </button>
+                </div>
             </div>
         </form>
     );

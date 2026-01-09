@@ -23,6 +23,15 @@ const UserSchema = new Schema({
         required: [true, 'Please provide a username'],
         match: [/^[a-zA-Z0-9_-]+$/, 'Username is invalid'],
     },
+    bio: {
+        type: String,
+        maxLength: 160,
+    },
+    socialLinks: {
+        twitter: String,
+        github: String,
+        website: String,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Key, LogOut, User as UserIcon, Layers, FileText, Plus, BarChart } from 'lucide-react';
+import { LayoutDashboard, Key, LogOut, User as UserIcon, Layers, FileText, Plus, BarChart, Settings } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
 export default function Sidebar({ user }: { user: any }) {
@@ -13,6 +13,7 @@ export default function Sidebar({ user }: { user: any }) {
         { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart },
         { name: 'My Articles', href: '/dashboard', icon: FileText },
         { name: 'API Keys', href: '/dashboard/api-keys', icon: Key },
+        { name: 'Settings', href: '/dashboard/settings', icon: Settings },
         { name: 'New Article', href: '/dashboard/create', icon: Plus },
     ];
 

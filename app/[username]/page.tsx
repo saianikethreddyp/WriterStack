@@ -3,7 +3,7 @@ import User from '@/models/User';
 import Article from '@/models/Article';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Calendar, Clock, BookOpen } from 'lucide-react';
+import { Calendar, Clock, BookOpen, Twitter, Github, Globe } from 'lucide-react';
 
 export default async function UserBlogPage({ params }: { params: Promise<{ username: string }> }) {
     const { username } = await params;
@@ -43,9 +43,31 @@ export default async function UserBlogPage({ params }: { params: Promise<{ usern
                 </div>
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                     {/* Bio Area - Placeholder if no bio field yet */}
-                    <p className="text-gray-600 max-w-2xl">
-                        Putting thoughts into words. Exploring technology, design, and the future of SaaS.
+                    {/* Bio Area */}
+                    <p className="text-gray-600 max-w-2xl mb-4">
+                        {user.bio || "Putting thoughts into words. Exploring technology, design, and the future of SaaS."}
                     </p>
+
+                    {/* Social Links */}
+                    {user.socialLinks && (
+                        <div className="flex space-x-4">
+                            {user.socialLinks.twitter && (
+                                <a href={`https://twitter.com/${user.socialLinks.twitter}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition">
+                                    <Twitter className="h-5 w-5" />
+                                </a>
+                            )}
+                            {user.socialLinks.github && (
+                                <a href={`https://github.com/${user.socialLinks.github}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900 transition">
+                                    <Github className="h-5 w-5" />
+                                </a>
+                            )}
+                            {user.socialLinks.website && (
+                                <a href={user.socialLinks.website} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-indigo-600 transition">
+                                    <Globe className="h-5 w-5" />
+                                </a>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 
