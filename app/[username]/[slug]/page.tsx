@@ -4,6 +4,7 @@ import Article from '@/models/Article';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
+import DOMPurify from 'isomorphic-dompurify';
 
 export default async function SingleArticlePage({ params }: { params: Promise<{ username: string, slug: string }> }) {
     const { username, slug } = await params;
@@ -95,8 +96,9 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
                     </header>
 
                     <div className="prose prose-lg prose-indigo mx-auto text-gray-600 leading-relaxed">
+
                         <div
-                            dangerouslySetInnerHTML={{ __html: article.content }}
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }}
                         />
                     </div>
 
