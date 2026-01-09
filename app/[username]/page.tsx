@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Calendar, Clock, BookOpen, Twitter, Github, Globe } from 'lucide-react';
 
+export const revalidate = 60; // Revalidate every minute
+
 export default async function UserBlogPage({ params }: { params: Promise<{ username: string }> }) {
     const { username } = await params;
 
@@ -20,113 +22,132 @@ export default async function UserBlogPage({ params }: { params: Promise<{ usern
         .lean();
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Profile Header */}
-            <div className="bg-white border-b border-gray-200">
-                <div className="h-32 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12">
-                    <div className="flex flex-col items-center sm:items-start sm:flex-row sm:space-x-5">
-                        <div className="h-24 w-24 rounded-full bg-white p-1 shadow-lg">
-                            {user.image ? (
-                                <img src={user.image} alt={user.name} className="h-full w-full rounded-full object-cover" />
-                            ) : (
-                                <div className="h-full w-full rounded-full bg-indigo-100 flex items-center justify-center text-3xl font-bold text-indigo-600">
-                                    {user.name[0]}
-                                </div>
-                            )}
+        <div className="min-h-screen bg-slate-50/50">
+            {/* Minimalist Header */}
+            <div className="bg-white border-b border-gray-100">
+                <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+                    <div className="flex flex-col items-center text-center">
+                        <div className="relative group">
+                            <div className="h-32 w-32 rounded-full p-1 bg-white ring-2 ring-gray-100 shadow-sm mb-6">
+                                {user.image ? (
+                                    <img
+                                        src={user.image}
+                                        alt={user.name}
+                                        className="h-full w-full rounded-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="h-full w-full rounded-full bg-slate-100 flex items-center justify-center text-4xl font-bold text-slate-400">
+                                        {user.name[0]}
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        <div className="mt-4 sm:mt-12 sm:pt-1 text-center sm:text-left">
-                            <p className="text-2xl font-bold text-gray-900">{user.name}</p>
-                            <p className="text-sm font-medium text-gray-500">@{user.username}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    {/* Bio Area - Placeholder if no bio field yet */}
-                    {/* Bio Area */}
-                    <p className="text-gray-600 max-w-2xl mb-4">
-                        {user.bio || "Putting thoughts into words. Exploring technology, design, and the future of SaaS."}
-                    </p>
 
-                    {/* Social Links */}
-                    {user.socialLinks && (
-                        <div className="flex space-x-4">
-                            {user.socialLinks.twitter && (
-                                <a href={`https://twitter.com/${user.socialLinks.twitter}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition">
-                                    <Twitter className="h-5 w-5" />
-                                </a>
-                            )}
-                            {user.socialLinks.github && (
-                                <a href={`https://github.com/${user.socialLinks.github}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900 transition">
-                                    <Github className="h-5 w-5" />
-                                </a>
-                            )}
-                            {user.socialLinks.website && (
-                                <a href={user.socialLinks.website} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-indigo-600 transition">
-                                    <Globe className="h-5 w-5" />
-                                </a>
-                            )}
-                        </div>
-                    )}
-                </div>
+                        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight mb-2">
+                            {user.name}
+                        </h1>
+                        <p className="text-lg text-gray-500 font-medium mb-6">@{user.username}</p>
+
+                        <p className="max-w-2xl text-lg text-gray-600 leading-relaxed mb-8">
+                            {user.bio || "Writing about technology, code, and the future. Exploring new ideas one article at a time."}
+                        </p>
+
+                        {/* Social Links - Refined */}
+                        {user.socialLinks && (
+                            <div className="flex items-center space-x-6 text-gray-400">
+                                {user.socialLinks.twitter && (
+                                    <a href={`https://twitter.com/${user.socialLinks.twitter}`} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-500 hover:scale-110 transition-all duration-200">
+                                        <Twitter className="h-6 w-6" />
+                                    </a>
+                                )}
+                                {user.socialLinks.github && (
+                                    <a href={`https://github.com/${user.socialLinks.github}`} target="_blank" rel="noopener noreferrer" className="hover:text-gray-900 hover:scale-110 transition-all duration-200">
+                                        <Github className="h-6 w-6" />
+                                    </a>
+                                )}
+                                {user.socialLinks.website && (
+                                    <a href={user.socialLinks.website} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-500 hover:scale-110 transition-all duration-200">
+                                        <Globe className="h-6 w-6" />
+                                    </a>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </main>
             </div>
 
-            {/* Articles Grid */}
-            <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-lg font-semibold text-gray-900">Latest Articles</h2>
-                    <span className="text-sm text-gray-500">{articles.length} posts</span>
+            {/* Content Area */}
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div className="flex items-center justify-between mb-10 border-b border-gray-200 pb-4">
+                    <h2 className="text-xl font-bold text-gray-900 tracking-tight">Articles</h2>
+                    <span className="bg-gray-100 text-gray-600 py-1 px-3 rounded-full text-xs font-semibold uppercase tracking-wide">
+                        {articles.length} Published
+                    </span>
                 </div>
 
                 {articles.length === 0 ? (
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-                        <div className="mx-auto h-12 w-12 text-gray-300 mb-4">
-                            <BookOpen className="h-full w-full" />
+                    <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                        <div className="mx-auto h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mb-4">
+                            <BookOpen className="h-8 w-8" />
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900">No content yet</h3>
-                        <p className="mt-1 text-gray-500">Check back later for updates.</p>
+                        <h3 className="text-xl font-medium text-gray-900 mb-2">No articles yet</h3>
+                        <p className="text-gray-500">When {user.name} publishes, it will show up here.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid gap-10">
                         {articles.map((article: any) => (
                             <Link
                                 key={article._id.toString()}
                                 href={`/${username}/${article.slug}`}
-                                className="group flex flex-col bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
+                                className="group block"
                             >
-                                <div className="h-48 bg-gray-100 relative overflow-hidden">
-                                    {article.image_url ? (
-                                        <img
-                                            src={article.image_url}
-                                            alt={article.title}
-                                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-indigo-50">
-                                            <BookOpen className="h-10 w-10 text-indigo-200" />
+                                <article className="flex flex-col md:flex-row gap-8 items-start">
+                                    {/* Image - Right side on desktop for magazine feel, or top on mobile */}
+                                    {article.image_url && (
+                                        <div className="w-full md:w-64 h-48 md:h-40 shrink-0 rounded-xl overflow-hidden bg-gray-100 shadow-sm group-hover:shadow-md transition-all order-1 md:order-2">
+                                            <img
+                                                src={article.image_url}
+                                                alt={article.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
                                         </div>
                                     )}
-                                </div>
-                                <div className="flex-1 p-6 flex flex-col">
-                                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
-                                        {article.title}
-                                    </h3>
-                                    <p className="text-gray-500 text-sm mb-4 line-clamp-3 flex-1">
-                                        {article.summary || "No summary available."}
-                                    </p>
-                                    <div className="flex items-center text-xs text-gray-400 mt-auto pt-4 border-t border-gray-100">
-                                        <Calendar className="h-3 w-3 mr-1" />
-                                        {new Date(article.createdAt).toLocaleDateString()}
-                                        <span className="mx-2">•</span>
-                                        <Clock className="h-3 w-3 mr-1" />
-                                        <span>5 min read</span>
+
+                                    {/* Content */}
+                                    <div className="flex-1 order-2 md:order-1">
+                                        <div className="flex items-center space-x-2 text-xs font-medium text-gray-500 mb-3">
+                                            <time dateTime={article.createdAt}>
+                                                {new Date(article.createdAt).toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                    year: 'numeric'
+                                                })}
+                                            </time>
+                                            <span>•</span>
+                                            <span>5 min read</span>
+                                        </div>
+
+                                        <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-indigo-600 transition-colors leading-tight">
+                                            {article.title}
+                                        </h3>
+
+                                        <p className="text-gray-600 leading-relaxed line-clamp-2 md:line-clamp-3 mb-4">
+                                            {article.summary || "Click to read the full story. This article explores deep technical concepts and provides actionable insights."}
+                                        </p>
+
+                                        <div className="flex items-center text-indigo-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                                            Read article
+                                            <svg className="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                </div>
+                                </article>
                             </Link>
                         ))}
                     </div>
                 )}
-            </main>
+            </div>
         </div>
     );
 }

@@ -48,6 +48,16 @@ export async function POST(req: Request) {
         );
     } catch (error: any) {
         console.error('Registration Error:', error);
+
+        // Handle Mongoose duplicate key error (Race condition safety)
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyPattern)[0];
+            return NextResponse.json(
+                { message: `${field.charAt(0).toUpperCase() + field.slice(1)} already exists` },
+                { status: 400 }
+            );
+        }
+
         return NextResponse.json(
             { message: 'Internal Server Error', error: error.message },
             { status: 500 }

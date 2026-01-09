@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import DOMPurify from 'isomorphic-dompurify';
 
+export const revalidate = 60; // ISR for published articles
+
 export default async function SingleArticlePage({ params }: { params: Promise<{ username: string, slug: string }> }) {
     const { username, slug } = await params;
 
@@ -14,19 +16,16 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
     const user = await User.findOne({ username });
     if (!user) return notFound();
 
-    // Start session check in parallel with DB query for speed
-    const sessionPromise = (async () => {
-        const { getServerSession } = await import('next-auth');
-        const { authOptions } = await import('@/app/api/auth/[...nextauth]/route');
-        return getServerSession(authOptions);
-    })();
-
     const article = await Article.findOne({ authorId: user._id, slug }).lean();
     if (!article) return notFound();
 
-    // If draft, only allow author to view
+    // Only check auth if article is NOT published (Draft Mode)
+    // This allows published articles to be statically cached (ISR)
     if (!article.published) {
-        const session = await sessionPromise;
+        const { getServerSession } = await import('next-auth');
+        const { authOptions } = await import('@/app/api/auth/[...nextauth]/route');
+        const session = await getServerSession(authOptions);
+
         if (session?.user?.id !== user._id.toString()) {
             return notFound();
         }
