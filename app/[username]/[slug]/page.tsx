@@ -13,14 +13,46 @@ export default async function SingleArticlePage({ params }: { params: Promise<{ 
     const user = await User.findOne({ username });
     if (!user) return notFound();
 
-    const article = await Article.findOne({ authorId: user._id, slug, published: true }).lean();
+    // Start session check in parallel with DB query for speed
+    const sessionPromise = (async () => {
+        const { getServerSession } = await import('next-auth');
+        const { authOptions } = await import('@/app/api/auth/[...nextauth]/route');
+        return getServerSession(authOptions);
+    })();
+
+    const article = await Article.findOne({ authorId: user._id, slug }).lean();
     if (!article) return notFound();
+
+    // If draft, only allow author to view
+    if (!article.published) {
+        const session = await sessionPromise;
+        if (session?.user?.id !== user._id.toString()) {
+            return notFound();
+        }
+    }
 
     // Track view asynchronously (fire and forget)
     await import('@/lib/analytics').then(mod => mod.trackView(article._id, user._id));
 
     return (
         <div className="min-h-screen bg-white">
+            {/* Preview Banner */}
+            {!article.published && (
+                <div className="bg-yellow-50 border-b border-yellow-200 px-4 py-3 sm:px-6">
+                    <div className="max-w-3xl mx-auto flex items-center justify-between">
+                        <div className="flex items-center">
+                            <span className="flex p-2 rounded-lg bg-yellow-100">
+                                <Clock className="h-6 w-6 text-yellow-600" aria-hidden="true" />
+                            </span>
+                            <p className="ml-3 font-medium text-yellow-700 truncate">
+                                <span className="md:hidden">Draft Preview</span>
+                                <span className="hidden md:inline">You are viewing a draft. This page is not public.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Navigation */}
             <nav className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-gray-100">
                 <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">

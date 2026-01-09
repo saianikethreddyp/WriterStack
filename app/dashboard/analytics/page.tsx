@@ -20,6 +20,9 @@ const getLast7Days = () => {
     return { days, labels };
 };
 
+// Force dynamic rendering to ensure analytics are real-time
+export const dynamic = 'force-dynamic';
+
 export default async function AnalyticsPage() {
     const session = await getServerSession(authOptions);
 
@@ -69,7 +72,20 @@ export default async function AnalyticsPage() {
 
     return (
         <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight mb-8">Analytics</h1>
+            <div className="flex items-center justify-between mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Analytics</h1>
+                <form>
+                    <button
+                        formAction={async () => {
+                            'use server';
+                            // This empty action triggers a revalidation
+                        }}
+                        className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                    >
+                        Refresh Data
+                    </button>
+                </form>
+            </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-8">

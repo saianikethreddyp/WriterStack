@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { Eye } from 'lucide-react';
 import 'react-quill-new/dist/quill.snow.css';
 
 // Dynamic import for Quill to avoid SSR issues
@@ -15,6 +17,8 @@ interface ArticleEditorProps {
 
 export default function ArticleEditor({ initialData, isEditMode = false }: ArticleEditorProps) {
     const router = useRouter();
+    const { data: session } = useSession();
+
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [formData, setFormData] = useState({
@@ -38,6 +42,43 @@ export default function ArticleEditor({ initialData, isEditMode = false }: Artic
             setFormData(prev => ({ ...prev, title, slug }));
         } else {
             setFormData(prev => ({ ...prev, title }));
+        }
+    };
+
+    const handlePreview = async () => {
+        setLoading(true);
+        try {
+            // 1. Save current state
+            const url = isEditMode ? `/api/articles/${initialData._id}` : '/api/articles';
+            const method = isEditMode ? 'PUT' : 'POST';
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+
+            if (!res.ok) throw new Error('Failed to save before preview');
+
+            const savedData = await res.json();
+
+            // 2. Construct Preview URL
+            // If new article, we might need to redirect to edit mode first, or just open the link
+            const targetSlug = savedData.slug || formData.slug;
+            const username = session?.user?.username;
+
+            if (username) {
+                window.open(`/${username}/${targetSlug}`, '_blank');
+            } else {
+                alert('Could not determine preview URL.');
+            }
+
+            if (!isEditMode) {
+                router.push(`/dashboard/edit/${savedData._id}`);
+            }
+        } catch (error) {
+            alert('Error saving draft for preview');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -179,6 +220,15 @@ export default function ArticleEditor({ initialData, isEditMode = false }: Artic
                         className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
                     >
                         Cancel
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handlePreview}
+                        disabled={loading}
+                        className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 inline-flex items-center"
+                    >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Preview
                     </button>
                     <button
                         type="submit"

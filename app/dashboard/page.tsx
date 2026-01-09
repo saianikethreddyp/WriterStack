@@ -5,7 +5,7 @@ import Article from '@/models/Article';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Plus, FileText, Globe, Pencil } from 'lucide-react';
-import ArticleActions from '@/components/ArticleActions';
+import ArticleList from '@/components/ArticleList';
 
 export default async function DashboardPage() {
     const session = await getServerSession(authOptions);
@@ -101,61 +101,8 @@ export default async function DashboardPage() {
 
             {/* Content Table */}
             <h2 className="text-lg font-medium text-gray-900 mb-4">Recent Content</h2>
-            <div className="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden">
-                {articles.length === 0 ? (
-                    <div className="text-center py-12">
-                        <div className="mx-auto h-12 w-12 text-gray-300">
-                            <FileText className="h-full w-full" />
-                        </div>
-                        <h3 className="mt-2 text-sm font-medium text-gray-900">No articles</h3>
-                        <p className="mt-1 text-sm text-gray-500">Get started by creating a new article.</p>
-                        <div className="mt-6">
-                            <Link
-                                href="/dashboard/create"
-                                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                            >
-                                <Plus className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
-                                New Article
-                            </Link>
-                        </div>
-                    </div>
-                ) : (
-                    <ul role="list" className="divide-y divide-gray-100">
-                        {articles.map((article: any) => (
-                            <li key={article._id.toString()} className="hover:bg-gray-50 transition duration-150 ease-in-out">
-                                <div className="px-6 py-5 flex items-center justify-between">
-                                    <div className="flex min-w-0 gap-x-4">
-                                        <div className="min-w-0 flex-auto">
-                                            <p className="text-sm font-semibold leading-6 text-gray-900">
-                                                <Link href={`/dashboard/edit/${article._id}`} className="hover:underline">
-                                                    {article.title}
-                                                </Link>
-                                            </p>
-                                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">
-                                                /{article.slug}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-col items-end gap-y-1">
-                                        <p className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${article.published
-                                            ? 'bg-green-50 text-green-700 ring-green-600/20'
-                                            : 'bg-yellow-50 text-yellow-800 ring-yellow-600/20'
-                                            }`}>
-                                            {article.published ? 'Published' : 'Draft'}
-                                        </p>
-                                        <p className="text-xs leading-5 text-gray-500">
-                                            {new Date(article.createdAt).toLocaleDateString()}
-                                        </p>
-                                        <div className="mt-2">
-                                            <ArticleActions articleId={article._id.toString()} />
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
+            {/* Content Table (Client Component with Search) */}
+            <ArticleList initialArticles={JSON.parse(JSON.stringify(articles))} />
         </div>
     );
 }
