@@ -4,7 +4,7 @@ import dbConnect from '@/lib/db';
 import Article from '@/models/Article';
 import DailyStat from '@/models/DailyStat';
 import { redirect } from 'next/navigation';
-import { BarChart, TrendingUp, Eye, Calendar } from 'lucide-react';
+import { BarChart, TrendingUp, Eye, Calendar, FileText } from 'lucide-react';
 
 // Returns array of last 7 days strings [Mon, Tue, ...] and dates
 const getLast7Days = () => {
@@ -38,20 +38,26 @@ export default async function AnalyticsPage() {
         .limit(5)
         .lean();
 
-    const totalViews = await Article.aggregate([
+    const totalViewsAggr = await Article.aggregate([
         { $match: { authorId: new mongoose.Types.ObjectId(session.user.id) } },
         { $group: { _id: null, total: { $sum: '$views' } } }
     ]);
-    const viewCount = totalViews[0]?.total || 0;
+    const viewCount = totalViewsAggr[0]?.total || 0;
 
-    // 2. Fetch Last 7 Days Stats
+    const totalArticles = await Article.countDocuments({ authorId: session.user.id });
+    const avgViews = totalArticles > 0 ? Math.round(viewCount / totalArticles) : 0;
+
+    // 2. Fetch Last 14 Days Stats (Current 7 + Previous 7 for trend)
     const { days, labels } = getLast7Days();
-    // Fetch stats for these days
+    const prev7DaysStart = new Date(days[0]); // Earliest of current 7 days
+    prev7DaysStart.setDate(prev7DaysStart.getDate() - 7);
+
+    // Fetch stats for last 14 days
     const stats = await DailyStat.aggregate([
         {
             $match: {
                 userId: new mongoose.Types.ObjectId(session.user.id),
-                date: { $gte: days[0] }
+                date: { $gte: prev7DaysStart }
             }
         },
         {
@@ -62,7 +68,31 @@ export default async function AnalyticsPage() {
         }
     ]);
 
-    // Map database results to the 7-day array, filling gaps with 0
+    // Current 7 days sum
+    const current7DaysViews = days.map(day => {
+        const found = stats.find(s => new Date(s._id).getTime() === day.getTime());
+        return found ? found.totalViews : 0;
+    }).reduce((a, b) => a + b, 0);
+
+    // Previous 7 days sum
+    let prev7DaysViews = 0;
+    for (let i = 1; i <= 7; i++) {
+        const d = new Date(days[0]); // Start from earliest of current week
+        d.setDate(d.getDate() - i); // Go back 1 to 7 days
+        d.setHours(0, 0, 0, 0);
+        const found = stats.find(s => new Date(s._id).getTime() === d.getTime());
+        if (found) prev7DaysViews += found.totalViews;
+    }
+
+    // Calculate Trend
+    let trendPercent = 0;
+    if (prev7DaysViews > 0) {
+        trendPercent = Math.round(((current7DaysViews - prev7DaysViews) / prev7DaysViews) * 100);
+    } else if (current7DaysViews > 0) {
+        trendPercent = 100; // 100% growth if previous was 0 and now is > 0
+    }
+
+    // Chart Data (Current 7 days)
     const chartData = days.map(day => {
         const found = stats.find(s => new Date(s._id).getTime() === day.getTime());
         return found ? found.totalViews : 0;
@@ -88,7 +118,8 @@ export default async function AnalyticsPage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-8">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+                {/* Total Views */}
                 <div className="bg-white overflow-hidden shadow rounded-xl border border-gray-100 p-5">
                     <div className="flex items-center">
                         <div className="flex-shrink-0 bg-indigo-50 p-3 rounded-lg">
@@ -105,17 +136,55 @@ export default async function AnalyticsPage() {
                     </div>
                 </div>
 
+                {/* Total Articles */}
                 <div className="bg-white overflow-hidden shadow rounded-xl border border-gray-100 p-5">
                     <div className="flex items-center">
-                        <div className="flex-shrink-0 bg-green-50 p-3 rounded-lg">
-                            <TrendingUp className="h-6 w-6 text-green-600" />
+                        <div className="flex-shrink-0 bg-purple-50 p-3 rounded-lg">
+                            <FileText className="h-6 w-6 text-purple-600" />
+                        </div>
+                        <div className="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt className="text-sm font-medium text-gray-500 truncate">Total Articles</dt>
+                                <dd>
+                                    <div className="text-2xl font-bold text-gray-900">{totalArticles}</div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Avg Views/Article */}
+                <div className="bg-white overflow-hidden shadow rounded-xl border border-gray-100 p-5">
+                    <div className="flex items-center">
+                        <div className="flex-shrink-0 bg-blue-50 p-3 rounded-lg">
+                            <BarChart className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <div className="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt className="text-sm font-medium text-gray-500 truncate">Avg. Views/Article</dt>
+                                <dd>
+                                    <div className="text-2xl font-bold text-gray-900">{avgViews}</div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Growth Trend */}
+                <div className="bg-white overflow-hidden shadow rounded-xl border border-gray-100 p-5">
+                    <div className="flex items-center">
+                        <div className={`flex-shrink-0 p-3 rounded-lg ${trendPercent >= 0 ? 'bg-green-50' : 'bg-red-50'}`}>
+                            <TrendingUp className={`h-6 w-6 ${trendPercent >= 0 ? 'text-green-600' : 'text-red-600'}`} />
                         </div>
                         <div className="ml-5 w-0 flex-1">
                             <dl>
                                 <dt className="text-sm font-medium text-gray-500 truncate">Growth (7d)</dt>
-                                <dd>
+                                <dd className="flex items-baseline">
                                     <div className="text-2xl font-bold text-gray-900">
-                                        +{chartData.reduce((a, b) => a + b, 0)}
+                                        {trendPercent > 0 ? '+' : ''}{trendPercent}%
+                                    </div>
+                                    <div className={`ml-2 text-sm font-medium ${trendPercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                        vs last week
                                     </div>
                                 </dd>
                             </dl>
