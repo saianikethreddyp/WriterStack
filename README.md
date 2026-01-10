@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WriterStack
+**The Headless CMS for Performance Obsessed Teams**
+
+[![Product Hunt](https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=YOUR_POST_ID&theme=light)](https://www.producthunt.com/posts/YOUR_POST_ID)
+
+WriterStack is a modern, high-performance Headless CMS and blogging platform built for developers who care about speed, design, and flexibility. 
+
+Whether you need a **personal portfolio** hosted at `writerstack.com/you` or a robust **Headless CMS** to power your company's heavy-traffic engineering blog, WriterStack provides the tools you need to ship faster.
+
+## Features
+
+- **Headless Architecture**: Fetch your content via our globally distributed, edge-cached REST API.
+- **Real-time Analytics 2.0**: Track views, API hits, and visitor engagement statistics instantly.
+- **Secure by Default**: Enterprise-grade security with API keys, per-user isolation, and encrypted storage.
+- **Notion-style Editor**: A beautiful, distraction-free writing experience with full Markdown support.
+- **Public Blogs**: Every user gets a free, zero-config public blog at `writerstack.com/username`.
+- **Framework Agnostic**: Works seamlessly with Next.js, React, Vue, Svelte, or any HTTP-capable client.
+
+## Tech Stack
+
+Built with the latest and greatest web technologies:
+
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Database**: [MongoDB](https://www.mongodb.com/) (Mongoose)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+- **Icons**: [Lucide React](https://lucide.dev/)
 
 ## Getting Started
 
-First, run the development server:
+To run the WriterStack platform locally for development:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/writerstack-saas.git
+   cd writerstack-saas
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Set up environment variables**
+   Create a `.env.local` file in the root directory and add your MongoDB URI, NextAuth secret, and other config keys.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-## Learn More
+   Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-To learn more about Next.js, take a look at the following resources:
+## Use Cases
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### For Personal Portfolios
+Launch a professional blog in seconds. No coding required.
+- **Your own URL**: `writerstack.com/you`
+- **Built-in SEO**: Automatic meta tags and sitemaps.
+- **Zero Config**: Just sign up and start writing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### For Engineering Teams
+Use WriterStack as your Headless CMS.
+- **API-First**: `GET /api/v1/articles` to fetch content.
+- **Custom Frontend**: Render articles on your own corporate site (`yourcompany.com/blog`) using your own components and branding.
+- **Team Collaboration**: Shared workspaces and editor roles.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Designed with love for the [Product Hunt](https://www.producthunt.com/) community.
