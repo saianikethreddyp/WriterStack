@@ -87,8 +87,8 @@ export default function Sidebar({ user }: { user: any }) {
                             <p className="text-sm font-medium text-white group-hover:text-white truncate">
                                 {user?.name}
                             </p>
-                            <a href={`/${user?.username}`} target="_blank" className="text-xs font-medium text-slate-400 group-hover:text-indigo-400 transition-colors truncate block">
-                                @{user?.username} ↗
+                            <a href={`/${user?.username}`} target="_blank" className="text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors truncate block mt-0.5">
+                                View Public Profile ↗
                             </a>
                         </div>
                         <button
